@@ -10,10 +10,10 @@ tamArquivos = length(arquivos);                 % Tamanho do array de arquivos
 for i = 1 : tamArquivos
     arquivo = arquivos(i).name;                 % Retorna nome de arquivo atual
  
-    tabela = retornaMatriz(arquivo,3);          % Retorna matriz com elementos do arquivo em tres colunas
+    tabela = retornaMatriz('', arquivo);          % Retorna matriz com elementos do arquivo em tres colunas
 
     valores_tabela = str2double(tabela);        % Transforma os valores da matriz para double
-    %valores_tabela(valores_tabela(:, 2)== 0, :)=[];     %Retorna apenas as linhas cuja o valor da aresta (segunda coluna) nao seja 0.
+    valores_tabela(valores_tabela(:, 2)== 0, :)=[];     %Retorna apenas as linhas cuja o valor da aresta (segunda coluna) nao seja 0.
     
     arestas = valores_tabela(:,2);              % Pega a coluna das arestas
     aglomeracao = valores_tabela(:,3);          % Pega a coluna dos coeficientes de aglomeraçào
@@ -27,7 +27,12 @@ for i = 1 : tamArquivos
     tabela_medias(end+1,:) = {arquivo,mne,mcc,stne,stcc};   % Para cada arquivo, salva os valores acima para tabela
 end
 
-fido = fopen('Tabela_Medias_Demencia_zero.txt', 'wt');                           % Abre arquivo 
+caminho = pwd;                      % Pega caminho diretorio atual
+diretorio = strsplit(caminho, '\'); % Divide o caminho em arrays com os nomes dos diretorios
+tipo = diretorio{end};              % Pega o nome do diretorio atual
+epoca = diretorio{end-1};           % Pega o nome do diretorio pai
+nomeArquivo = strcat(epoca,'-',tipo,'-','Tabela_Medias_Demencia_zero.txt'); % Gera nome do arquivo
+fido = fopen(nomeArquivo, 'wt');                      % Abre arquivo 
 
 fprintf(fido,'%s\t%s\t%s\t%s\t%s\n','Arquivo','MNE','MCC','STNE','STCC');   % Imprime cabeçalho da tabela
 
