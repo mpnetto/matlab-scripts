@@ -2,35 +2,43 @@
 %Autor: Marcos Netto
 %email: mpnetto88@gmail.com
 
-arquivos = dir('*Tabela_Media_Ponderada*');               % Pega todos os arquivos iTime
-tamArquivos = length(arquivos);                          % Tamanho do array de arquivos
+function arquivo = media_matrizes(txt)
 
-tabela_matriz = [];
+    arquivos = dir(strcat('*',txt,'*'));            % Pega todos os arquivos iTime
+    tamArquivos = length(arquivos);                 % Tamanho do array de arquivos
 
-for i = 1 : tamArquivos
-    arquivo = arquivos(i).name;                 % Retorna nome de arquivo atual
- 
-    tabela = retornaMatriz(arquivo,2);          % Retorna matriz com elementos do arquivo em cinco colunas
+    tabela_matriz = [];
+
+    for i = 1 : tamArquivos
+        arquivo = arquivos(i).name;                 % Retorna nome de arquivo atual
+
+        tabela = retornaMatriz('', arquivo);        % Retorna matriz com elementos do arquivo 
+        
+        linha_cabecalho = tabela(1,:);              % Salva os valores de cabecalho
+        
+        tabela(1,:) = [];                           % Remove a linha de indices
+
+        coluna_indices = tabela(:,1);               % Salva os valores dos indices
+
+        tabela(:,1) = [];                           % Remove a coluna de indices
+
+        valores_tabela = str2double(tabela);        % Transforma os valores da matriz para double
+
+        tabela_matriz = cat(3,valores_tabela,tabela_matriz); %Concatena todas as tabelas em uma matriz
+    end
+
+    media_matriz = mean(tabela_matriz,3);           % Tira as medias das matrizes     
+
+    tabela_medias = horzcat(coluna_indices,num2cell(media_matriz));     % Concatena as medias com a coluna de indices
+
+    caminho = pwd;                      % Pega caminho diretorio atual
+    diretorio = strsplit(caminho, '\'); % Divide o caminho em arrays com os nomes dos diretorios
+    tipo = diretorio{end};              % Pega o nome do diretorio atual
+    nomeArquivo = strcat(txt,' - Tabela_Media_', tipo,'.txt'); % Gera nome do arquivo
     
-    coluna_indices = tabela(:,1);               % Salva os valores dos indices
+    tabela_medias = cell2table(tabela_medias);
+    tabela_medias.Properties.VariableNames = linha_cabecalho;
     
-    tabela(:,1) = [];                           % Remove a coluna de indices
-    
-    valores_tabela = str2double(tabela);        % Transforma os valores da matriz para double
-    
-    tabela_matriz = cat(3,valores_tabela,tabela_matriz); %Concatena todas as tabelas em uma matriz
+    writetable(tabela_medias,nomeArquivo,'Delimiter','\t')  
+
 end
-
-media_matriz = mean(tabela_matriz,3);           % Tira as medias das matrizes     
-
-tabela_medias = horzcat(coluna_indices,num2cell(media_matriz));     % Concatena as medias com a coluna de indices
-
-fido = fopen('Tabela_Media_Controle.txt', 'wt');                                    % Abre arquivo 
-
-fprintf(fido,'%s\t%s\n','Arquivo','Mkp');   % Imprime cabeçalho da tabela
-
-for i = 1:size(tabela_medias,1)    
-    fprintf(fido,'%s\t%g\n',tabela_medias{i,1},tabela_medias{i,2});    %Imprime recursivamente as linhas da tabela         
-end
-
-fclose(fido);   

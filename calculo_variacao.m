@@ -2,14 +2,19 @@
 %Autor: Marcos Netto
 %email: mpnetto88@gmail.com
 
-[arquivo] = uigetfile('*.txt', 'Selecione um arquivo');
-
-if isequal(arquivo,0)
-    disp('Programa cancelado pelo usuário');
-    return;
+if exist('variacao','var') == 0
+    variacao = '';
 end
 
-tabela = retornaMatriz(arquivo,5);          % Retorna matriz com elementos do arquivo em cinco colunas
+if ~exist('arquivo','var')
+    tabela = retornaMatriz('Selecione o Arquivo');  % Retorna matriz com elementos do arquivo
+else
+    tabela = retornaMatriz('',arquivo);  % Retorna matriz com elementos do arquivo
+end
+
+linha_cabecalho = tabela(1,:);              % Salva os valores de cabecalho
+        
+tabela(1,:) = [];                           % Remove a linha de indices
 
 coluna_indices = tabela(:,1);               % Salva os valores dos indices
     
@@ -30,25 +35,20 @@ tabela_cva = horzcat(coluna_indices,num2cell(cva));     % Concatena o cva com a 
 
 tabela_cvag = horzcat(coluna_indices,num2cell(cvag));   % Concatena o cvag com a coluna de indices
 
-fido = fopen('Coeficiente_Variacao_Aresta.txt', 'wt');                                    % Abre arquivo 
+caminho = pwd;                      % Pega caminho diretorio atual
+diretorio = strsplit(arquivo, '-'); % Divide o caminho em arrays com os nomes dos diretorios
+tipo = diretorio{end-1};              % Pega o nome do diretorio atual
+nomeArquivo1 = strcat(variacao,tipo,' - ','Coeficiente_Variacao_Aresta.txt'); % Gera nome do arquivo
+nomeArquivo2 = strcat(variacao,tipo,' - ','Coeficiente_Variacao_Aglomeracao.txt'); % Gera nome do arquivo
 
-fprintf(fido,'%s\t%s\n','INDIV','CVA');   % Imprime cabeçalho da tabela
+tabela_cva = cell2table(tabela_cva);
+tabela_cva.Properties.VariableNames = {'INDIV','CVA'};
 
-for i = 1:size(tabela_cva,1)    
-    fprintf(fido,'%s\t%g\n',tabela_cva{i,1},tabela_cva{i,2});    %Imprime recursivamente as linhas da tabela         
-end
+writetable(tabela_cva,nomeArquivo1,'Delimiter','\t')  
 
-fclose(fido);
+tabela_cvag = cell2table(tabela_cvag);
+tabela_cvag.Properties.VariableNames = {'INDIV','CVAg'};
 
-fido = fopen('Coeficiente_Variacao_Aglomeracao.txt', 'wt');                                    % Abre arquivo 
-
-fprintf(fido,'%s\t%s\n','INDIV','CVAg');   % Imprime cabeçalho da tabela
-
-for i = 1:size(tabela_cva,1)    
-    fprintf(fido,'%s\t%g\n',tabela_cvag{i,1},tabela_cvag{i,2});    %Imprime recursivamente as linhas da tabela         
-end
-
-fclose(fido);
-
+writetable(tabela_cvag,nomeArquivo2,'Delimiter','\t')  
 
 

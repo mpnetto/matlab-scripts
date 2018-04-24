@@ -2,19 +2,27 @@
 %Autor: Marcos Netto
 %email: mpnetto88@gmail.com
 
-tabela_matriz = [];                             % Cria Tabela que vai conteras informaçõs que serão
+global hubs;
+
+if exist('hubs','var') == 0
+    hubs = '';
+end
 
 tabela_contador = zeros(19,3);
 
-arquivos = dir('*Hubs_MoS.txt');               % Pega todos os arquivos iTime
+arquivos = dir('*Hubs_MoS.txt');                % Pega todos os arquivos Hubs_MoS
 tamArquivos = length(arquivos);                 % Tamanho do array de arquivos
 
 for i = 1 : tamArquivos
     arquivo = arquivos(i).name;                 % Retorna nome de arquivo atual
  
-    tabela = retornaMatriz(arquivo,7);          % Retorna matriz com elementos do arquivo em tres colunas
+    tabela = retornaMatriz('', arquivo);        % Retorna matriz com elementos do arquivo
     
-    tabela(:,2:4) = [];                           % Remove a coluna que nao vao utilizar
+    tabela(:,2:4) = [];                         % Remove as colunas de 2 a 4
+    
+    linha_cabecalho = tabela(1,:);              % Salva os valores de cabecalho
+        
+    tabela(1,:) = [];                           % Remove a linha de indices
 
     coluna_indices = tabela(:,1);               % Salva os valores dos indices
     
@@ -22,26 +30,29 @@ for i = 1 : tamArquivos
     
     valores_tabela = str2double(tabela);        % Transforma os valores da matriz para double
     
-    valores_media = mean(valores_tabela,1);
+    valores_media = mean(valores_tabela,1);     % Retorna array com as medias dos valores dos hubs
     
-    valores_desvio = std(valores_tabela,0, 1);
+    valores_desvio = std(valores_tabela,0, 1);  % Retorna array com os desvios padroes dos valores dos hubs
     
-    valores_med_std = valores_media + valores_desvio;
+    valores_med_std = valores_media + valores_desvio;   % Retorna array com a somas dos arrays das medias e desvios
     
-    compara = bsxfun(@gt,valores_tabela,valores_med_std);
+    compara = bsxfun(@gt,valores_tabela,valores_med_std); % Compara e retorna a matriz logica dos valores que foram maiores que a media + desvio
     
-    tabela_contador = tabela_contador + compara;
+    tabela_contador = tabela_contador + compara;          % Incrementa a matrix contadoras dos valores dos hubs que foram maiores que a media + desvio
 
 end 
 
-tabela_hubs = horzcat(coluna_indices,num2cell(tabela_contador));     % Concatena as medias com a coluna de indices
+tabela_contador = tabela_contador/tamArquivos;
 
-fido = fopen('SEG02_ASC - Demencia - Tabela_Media_Hubs.txt', 'wt');                                    % Abre arquivo 
+tabela_hubs = horzcat(coluna_indices,num2cell(tabela_contador));     % Concatena a matrix contadora com a coluna de indices
 
-fprintf(fido,'%s\t%s\t%s\t%s\n','Elect','Hubs','HubIn','HubOut');   % Imprime cabeçalho da tabela
+caminho = pwd;                      % Pega caminho diretorio atual
+diretorio = strsplit(caminho, '\'); % Divide o caminho em arrays com os nomes dos diretorios
+tipo = diretorio{end};              % Pega o nome do diretorio atual
+epoca = diretorio{end-1};           % Pega o nome do diretorio pai
+nomeArquivo = strcat(hubs,epoca,'-',tipo,'-','Tabela_Media_Hubs.txt'); % Gera nome do arquivo
 
-for i = 1:size(tabela_hubs,1)    
-    fprintf(fido,'%s\t%g\t%g\t%g\n',tabela_hubs{i,1},tabela_hubs{i,2},tabela_hubs{i,3},tabela_hubs{i,4});    %Imprime recursivamente as linhas da tabela         
-end
+tabela_hubs = cell2table(tabela_hubs);
+tabela_hubs.Properties.VariableNames = linha_cabecalho;
 
-fclose(fido); 
+writetable(tabela_hubs,nomeArquivo,'Delimiter','\t')  

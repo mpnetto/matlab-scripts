@@ -12,10 +12,29 @@
 %%
 %%
 % *Indica os arquivos e retorna a matriz de duas colunas com os indices e valores*
-                     
-controle = retornaMatriz( 'Selecione um documento Controle');     
-demencia = retornaMatriz( 'Selecione um documento Demencia');
 
+if exist('bootstrap','var') == 0
+    bootstrap = '';
+end
+
+if ~exist('tipo','var')
+    tipo = 'Aresta'
+    controle = retornaMatriz( 'Selecione um documento Controle');     
+    demencia = retornaMatriz( 'Selecione um documento Demencia');
+else
+    controleArquivo = dir(strcat('Controle*', tipo, '*.txt'));
+    controleArquivo = controleArquivo.name; 
+    controle = retornaMatriz('',controleArquivo);  % Retorna matriz com elementos do arquivo
+    
+    demenciaArquivo = dir(strcat('Pacientes*', tipo, '*.txt'));
+    demenciaArquivo = demenciaArquivo.name; 
+    demencia = retornaMatriz('',demenciaArquivo);  % Retorna matriz com elementos do arquivo
+end
+
+controle(1,:) = [];                           % Remove a linha de indices
+
+demencia(1,:) = [];                           % Remove a linha de indices
+                     
 %% 
 tabela_indices = [];                    % Cria tabela de incices vazia
 tamanho_controle = length(controle);    % Tamanho da tabela da primeira amostra
@@ -48,12 +67,13 @@ while (total_amostras < repeticoes)
         valores_controle = str2double(controle(:,2));
         valores_demencia = str2double(amostra_demencia(:,2));
 
-        [h,p] = ttest(valores_controle, valores_demencia);
+        [h,p] = ttest2(valores_controle, valores_demencia);
 
         total_amostras = total_amostras+1;
+        
+        tabela_medias = vertcat(horzcat(mean(valores_controle),mean(valores_demencia), p),tabela_medias);
 
         if(p<0.05)
-            tabela_medias = vertcat(horzcat(mean(valores_controle),mean(valores_demencia), p),tabela_medias);
             amostras_significantemente_diferentes = amostras_significantemente_diferentes+1;
         end
     end
@@ -61,7 +81,9 @@ end
 
 resultado = amostras_significantemente_diferentes/total_amostras;
 
-fido = fopen('BootStrap - CVAg.txt', 'wt');
+nomeArquivo = strcat(bootstrap,'BootStrap - ', tipo, '.txt');
+
+fido = fopen(nomeArquivo, 'wt');
 fprintf(fido,'%s\t%s\t%s\t\n','ASD','TA','Result');
 fprintf(fido,'%g\t%g\t%g\n',amostras_significantemente_diferentes, total_amostras, resultado);  
 fclose(fido);

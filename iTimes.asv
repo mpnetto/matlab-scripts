@@ -7,7 +7,7 @@ if exist('itimes','var') == 0
 end
 
 if exist('arestas0','var') == 0
-    arestas0 = '';
+    itimes = '';
 end
 
 tabela_medias = {};                             % Cria Tabela que vai conteras informaçõs que serão
@@ -51,7 +51,7 @@ diretorio = strsplit(caminho, '\'); % Divide o caminho em arrays com os nomes do
 tipo = diretorio{end};              % Pega o nome do diretorio atual
 epoca = diretorio{end-1};           % Pega o nome do diretorio pai
 nomeArquivo = strcat(itimes,epoca,'-',tipo,'-','Tabela_Medias_Desvios.txt'); % Gera nome do arquivo
-nomeArquivo2 = strcat(arestas0,epoca,'-',tipo,'-','Tabela_Arestas_0.txt'); % Gera nome do arquivo
+nomeArquivo2 = strcat(itimes,epoca,'-',tipo,'-','Tabela_Arestas_0.txt'); % Gera nome do arquivo
 
 tabela_medias = cell2table(tabela_medias);
 tabela_medias.Properties.VariableNames = {'Arquivo','MNE','MCC','STNE','STCC'};

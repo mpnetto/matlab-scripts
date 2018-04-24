@@ -20,10 +20,10 @@ function matriz = retornaMatriz(txt, arquivo)
 
     fac = fopen(arquivo);                   % Abre Arquivo
     cabecalho = fgets(fac);                 % Pega o conteudo do cabeçalho
+    frewind(fac);                           % Retorna ponteiroa posicao inicial
     delimiter = char(9);                    % Estipula delimitador (Nesse caso o tab)
-    cols = numel(strfind(cabecalho,delimiter)) + 1;   % Pega a quantidade de Colundas
+    cols = numel(strfind(cabecalho,delimiter)) + 1;   % Pega a quantidade de Colunas
     conteudo  = textscan(fac, '%s', 'Delimiter',delimiter);    % Pega todo o conteudo do arquivo e coloca em um array
-    frewind(fac);                           % Libera o ponteiro
     fclose(fac);                            % Fecha o arquvio
 
     len = cols*fix(length(conteudo{:})/cols);   %pega o tamanho do array que contem o conteudo do arquivo                                
