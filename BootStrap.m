@@ -5,29 +5,17 @@
 
 %% Calculo de BootStrap
 % O bootstrap é utilizado para comparar uma amostragem pequena
-% com uma amostragem grande. 
+% com uma amostragem grande. Neste BootStrap, as amostras são comparadas
+% aleatoriamente diversas vezes ate que todos as amostras sejam utilizadas
+% pelo menos uma vez.
 %
 
 %%
 %%
 % *Indica os arquivos e retorna a matriz de duas colunas com os indices e valores*
-
-[arquivo_controle] = uigetfile('*.txt', 'Selecione um documento Controle');
-
-if isequal(arquivo_controle,0)
-    disp('Programa cancelado pelo usuário');
-    return;
-end
-
-[arquivo_demencia] = uigetfile('*.txt', 'Selecione um documento Demencia');
-
-if isequal(arquivo_demencia,0)
-    disp('Programa cancelado pelo usuário');
-    return;
-end
-                     
-controle = retornaMatriz(arquivo_controle,2);     
-demencia = retornaMatriz(arquivo_demencia,2);
+                 
+controle = retornaMatriz( 'Selecione um documento Controle');     
+demencia = retornaMatriz( 'Selecione um documento Demencia');
 
 %% 
 % Cria uma tabela vazia para conter os indices e atribui tamanho das
@@ -48,9 +36,7 @@ amostras_significantemente_diferentes = 0;
 % suas respectivas variaveis
 % - Compara os valores de controle e demencia através do TTest e salva na
 % variável p.
-%%while length(tabela_indices) < tamanho_demencia
-
-for total_amostras = 10000
+while length(tabela_indices) < tamanho_demencia
 
     amostra_demencia = datasample(demencia,tamanho_controle,'Replace',false);
     
@@ -65,7 +51,7 @@ for total_amostras = 10000
 
     total_amostras = total_amostras+1;
     
-    if(p>0.05)
+    if(p<0.05)
         amostras_significantemente_diferentes = amostras_significantemente_diferentes+1;
     end
     
