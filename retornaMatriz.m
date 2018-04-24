@@ -7,14 +7,16 @@
 % Ler conteudo dentro de um arquivo e retorna em formato de matrix
 %
 
-function matriz = retornaMatriz(txt)
+function matriz = retornaMatriz(txt, arquivo)
 
-    [arquivo] = uigetfile('*.txt', txt);    % Abre caixa de seleção para arquivo de texto
+     if ~exist('arquivo','var')
+         [arquivo] = uigetfile('*.txt', txt);    % Abre caixa de seleção para arquivo de texto
 
-    if isequal(arquivo,0)
-        disp('Programa cancelado pelo usuário');
-        return;
-    end
+        if isequal(arquivo,0)
+            disp('Programa cancelado pelo usuário');
+            return;
+        end
+     end
 
     fac = fopen(arquivo);                   % Abre Arquivo
     cabecalho = fgets(fac);                 % Pega o conteudo do cabeçalho
