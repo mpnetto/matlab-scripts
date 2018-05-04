@@ -8,9 +8,9 @@ global arquivo
 global tipo;
 global arestas0;
                    
-dadosDir = 'Dados';
+dadosDir = 'A - Dados';
 iTimesDir = 'Itimes';
-ireaDir = 'iRea';
+ireaDir = 'Grau Ponderado';
 hubsDir = 'Hubs';
 bootstrapDir = 'BootStrap';
 variacaoDir = 'Coeficientes de Variacao';
@@ -25,13 +25,14 @@ irea = strcat(dados,ireaDir,'\');
 bootstrap = strcat(variacao,bootstrapDir,'\');
 arestas0 = strcat(itimes,arestas0Dir,'\');
 
-if exist(dadosDir, 'dir') == 0
+if (exist(dados, 'dir') == 0)
     mkdir(dadosDir);
     mkdir(itimes);
     mkdir(hubs);
     mkdir(irea);
     mkdir(variacao);
     mkdir(bootstrap);
+    mkdir(arestas0);
 end
 
 A = dir;
@@ -54,7 +55,7 @@ end
 
 cd(itimes);
 
-arquivo = media_matrizes('Pacientes');
+arquivo = media_matrizes('Demencia');
 calculo_variacao;
 arquivo = media_matrizes('Controle');
 calculo_variacao;
@@ -66,15 +67,15 @@ BootStrap_2;
 tipo = 'Aglomeracao';
 BootStrap_2;
 
-cd(hubs)
+%cd(hubs)
 
-soma_matrizes('Pacientes');
-soma_matrizes('Controle');
+%soma_matrizes('Pacientes');
+%soma_matrizes('Controle');
 
-cd(irea)
+%cd(irea)
 
-arquivo = media_matrizes('Pacientes');
-arquivo = media_matrizes('Controle');
+%arquivo = media_matrizes('Pacientes');
+%arquivo = media_matrizes('Controle');
 
 cd(dados)
 cd('..')
