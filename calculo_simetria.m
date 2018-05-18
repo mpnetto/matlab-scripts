@@ -9,21 +9,21 @@ arquivos = dir('*iREA_MoS.txt');                % Pega todos os arquivos iREA
 tamArquivos = length(arquivos);                 % Tamanho do array de arquivos
 
 for i = 1 : tamArquivos
-    arquivo = arquivos(i).name;                 % Retorna nome de arquivo atual
+    arquivo = arquivos(i).name;
  
-    tabela = retornaMatriz('', arquivo);        % Retorna matriz com elementos do arquivo
+    tabela = retornaMatriz('', arquivo);
     
-    linha_cabecalho = tabela(1,:);              % Salva os valores de cabecalho
+    linha_cabecalho = tabela(1,:);
         
-    tabela(1,:) = [];                           % Remove a linha de indices
+    tabela(1,:) = [];
     
-    eIndex = str2double(tabela(:,9));               % Retorna a coluna com os valores de grau ponderado
+    eIndex = str2double(tabela(:,9));
     
     eIndex(isnan(eIndex)) = [];
     
-    MeIndex = sum(eIndex);                             % Retorna a media dos valores do grau ponderado
+    MeIndex = sum(eIndex);
         
-    tabela_Mkp(end+1,:) = {arquivo, MeIndex};       % Para cada arquivo, salva os valores da media do grau ponderado
+    tabela_Mkp(end+1,:) = {arquivo, MeIndex}
     
     soma_Mkp = soma_Mkp + MeIndex;                  % Soma todas as medias do grau ponderado
     
