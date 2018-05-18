@@ -1,26 +1,29 @@
 %% BootStrap
-% Autor: Marcos Netto
-%
-% email: mpnetto88@gmail.com
+% 
+%  Autor: Marcos Netto
+%  Email: mpnetto88@gmail.com
 
 %% Calculo de BootStrap
 % O bootstrap é utilizado para comparar uma amostragem pequena
 % com uma amostragem grande. Neste BootStrap, é estipulado tamanho fixo de
 % repeticoes para gerar as amostras aleatorias que serão comparadas.
-%
 
-%%
-%%
-% *Indica os arquivos e retorna a matriz de duas colunas com os indices e valores*
+%% Modo de Usar
+% Rodar o programa na pasta onde foram gerados os arquivos pelo TNETEEG. Os
+% arquivos que este programa utiliza tem a extensão "REA_G_MoS*.txt"
 
-tipo = 'Kolmogorov-Smirnov - Simetria';
+%% Scripts e documentos necessários
+% 
+% * retornaMatriz.m
+% * plotWeiREA.m
+% * Location32.txt
+
 
 controle = retornaMatriz( 'Selecione um documento Controle');     
 demencia = retornaMatriz( 'Selecione um documento Demencia');
 
-controle(1,:) = [];                           % Remove a linha de indices
-
-demencia(1,:) = [];                           % Remove a linha de indices
+controle(1,:) = [];                          
+demencia(1,:) = [];
                      
 %% 
 tabela_indices = [];                    % Cria tabela de incices vazia
@@ -58,10 +61,7 @@ while (total_amostras < repeticoes)
         
         valores_controle = valores_controle;
 
-       [h,p] = kstest2( valores_demencia, valores_controle);
-        
-        a = lillietest(valores_controle);
-        b = lillietest(valores_controle);
+        [h,p] = ttest2( valores_demencia, valores_controle);
 
         total_amostras = total_amostras+1;
         
