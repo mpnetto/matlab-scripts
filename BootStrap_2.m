@@ -13,7 +13,7 @@
 %%
 % *Indica os arquivos e retorna a matriz de duas colunas com os indices e valores*
 
-tipo = 'Mann-WhitNey - Simetria';
+tipo = 'Kolmogorov-Smirnov - Simetria';
 
 controle = retornaMatriz( 'Selecione um documento Controle');     
 demencia = retornaMatriz( 'Selecione um documento Demencia');
@@ -55,12 +55,17 @@ while (total_amostras < repeticoes)
     
         valores_controle = str2double(controle(:,2));
         valores_demencia = str2double(amostra_demencia(:,2));
+        
+        valores_controle = valores_controle;
 
-        [h,p] = ranksum(valores_controle, valores_demencia);
+       [h,p] = kstest2( valores_demencia, valores_controle);
+        
+        a = lillietest(valores_controle);
+        b = lillietest(valores_controle);
 
         total_amostras = total_amostras+1;
         
-        tabela_medias = vertcat(horzcat(mean(valores_controle),mean(valores_demencia), p, h, indices),tabela_medias);
+        tabela_medias = vertcat(horzcat(mean(valores_controle),mean(valores_demencia), p, h, a,b),tabela_medias);
 
         if(p<0.05)
             amostras_significantemente_diferentes = amostras_significantemente_diferentes+1;
