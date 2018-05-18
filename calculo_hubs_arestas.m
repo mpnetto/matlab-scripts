@@ -20,6 +20,7 @@
 % 
 % * retornaMatriz.m
 % * plotWeiREA.m
+% * getEletrodeLocations.m
 % * Location32.txt
 
 %% Imagens
@@ -31,12 +32,7 @@ nos_ids={'Fp1';'Fp2';'F7';'F8';'F3';'F4';'T3'; 'T4';'C3'; ...
 
 % Salva as coordenadas dos eletrodos e retorna apenas os que serão
 % utilizaods
-coord = retornaMatriz( '', 'Location32.txt');             
-coord(1,:) = [];
-elecs = ismember(coord(:,1), nos_ids);
-coord(~elecs, :)=[];
-coord(:,1)=[];
-coord = str2double(coord);
+coord = getEletrodeLocations(nos_ids,'Location32.txt');
 
 % Retorna todos os arquivos que contem REA_G_MoS*.txt no nome do arquivo
 arquivos = dir('*REA_G_MoS*.txt');
