@@ -13,7 +13,7 @@
 %%
 % *Indica os arquivos e retorna a matriz de duas colunas com os indices e valores*
 
-tipo = 'Media Ponderada';
+tipo = 'Mann-WhitNey - Simetria';
 
 controle = retornaMatriz( 'Selecione um documento Controle');     
 demencia = retornaMatriz( 'Selecione um documento Demencia');
@@ -56,7 +56,7 @@ while (total_amostras < repeticoes)
         valores_controle = str2double(controle(:,2));
         valores_demencia = str2double(amostra_demencia(:,2));
 
-        [h,p] = ttest2(valores_controle, valores_demencia);
+        [h,p] = ranksum(valores_controle, valores_demencia);
 
         total_amostras = total_amostras+1;
         

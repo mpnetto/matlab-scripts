@@ -2,12 +2,6 @@
 %Autor: Marcos Netto
 %email: mpnetto88@gmail.com
 
-global irea;
-
-if exist('irea','var') == 0
-    irea = '';
-end
-
 tabela_Mkp = {};                                % Cria Tabela das medias do grau ponderado
 soma_Mkp = 0;                                   % Contador da soma das medias        
 
@@ -37,8 +31,8 @@ caminho = pwd;                      % Pega caminho diretorio atual
 diretorio = strsplit(caminho, '\'); % Divide o caminho em arrays com os nomes dos diretorios
 tipo = diretorio{end};              % Pega o nome do diretorio atual
 epoca = diretorio{end-1};           % Pega o nome do diretorio pai
-nomeArquivo1 = strcat(irea, epoca,'-',tipo,'-','Tabela_Media_Ponderada.txt'); % Gera nome do arquivo
-nomeArquivo2 = strcat(irea, epoca,'-',tipo,'-','Media_Ponderada.txt'); % Gera nome do arquivo
+nomeArquivo1 = strcat(tipo,'-','Tabela_Media_Ponderada.txt'); % Gera nome do arquivo
+nomeArquivo2 = strcat(tipo,'-','Media_Ponderada.txt'); % Gera nome do arquivo
 
 tabela_Mkp = cell2table(tabela_Mkp);
 tabela_Mkp.Properties.VariableNames = {'Arquivo','Mkp'};

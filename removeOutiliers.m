@@ -3,7 +3,7 @@
 %
 % email: mpnetto88@gmail.com
 
-nome_arquivo = 'Tabela_Media_Ponderada';
+nome_arquivo = 'Demencia-Tabela_Simetria';
 
 tabela = retornaMatriz( 'Selecione um documento para remover Outliers');
 
