@@ -13,7 +13,7 @@
 tabela_Mkp = {};
 
 % Retorna todos os arquivos que contem iREA_MoS.txt no nome do arquivo
-arquivos = dir('*iREA_MoS.txt');
+arquivos = dir('*iREA_MoS*.txt');
 tamArquivos = length(arquivos);
 
 for i = 1 : tamArquivos
