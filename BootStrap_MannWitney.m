@@ -19,6 +19,7 @@
 
 %% Scripts e documentos necessários
 % * lerArquivo.m
+% * escreverArquivo.m
 
 controle = lerArquivo( 'Selecione um documento Controle');     
 demencia = lerArquivo( 'Selecione um documento Demencia');
@@ -27,7 +28,7 @@ demencia = lerArquivo( 'Selecione um documento Demencia');
 controle(1,:) = [];                          
 demencia(1,:) = [];
 
-%
+% Inicia tabela de indices
 tabela_indices = [];
 
 % Retorna tamanho da tabeladas amostras
@@ -71,7 +72,7 @@ while (total_amostras < repeticoes)
         
         valores_controle = valores_controle;
 
-        [h,p] = ttest2( valores_demencia, valores_controle);
+        [p, h] = ranksum( valores_demencia, valores_controle);
 
         total_amostras = total_amostras+1;
         
@@ -88,9 +89,7 @@ end
 
 resultado = amostras_significantemente_diferentes/total_amostras;
 
-nomeArquivo = uiputfile('.txt','BootStrap - Teste T', 'BootStrap - Teste T');
+cabecalho = {'ASD', 'TA', 'Result'};
+tabela = table(amostras_significantemente_diferentes, total_amostras, resultado);
 
-fido = fopen(nomeArquivo, 'wt');
-fprintf(fido,'%s\t%s\t%s\t\n','ASD','TA','Result');
-fprintf(fido,'%g\t%g\t%g\n',amostras_significantemente_diferentes, total_amostras, resultado);  
-fclose(fido);
+escreveArquivo(tabela,cabecalho,'BootStrap - MannWitney', '.txt');

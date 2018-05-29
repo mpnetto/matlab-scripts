@@ -1,46 +1,41 @@
-% -- Calculo de Grau Ponderado --
-%Autor: Marcos Netto
-%email: mpnetto88@gmail.com
+%% Grau Ponderado
+% 
+%  Autor: Marcos Netto
+%  Email: mpnetto88@gmail.com
+% 
 
-tabela_Mkp = {};                                % Cria Tabela das medias do grau ponderado
-soma_Mkp = 0;                                   % Contador da soma das medias        
+%% Calculo do Grau Ponderado
+% O calculo do Grau Ponderado calcula a média do grau ponderado de cada
+% individuo. Uma tabela com todos as médias dos individuos é salva em um
+% arquivo de texto
 
-arquivos = dir('*iREA_MoS.txt');                % Pega todos os arquivos iREA
-tamArquivos = length(arquivos);                 % Tamanho do array de arquivos
+% Cria Tabela das medias do grau ponderado
+tabela_Mkp = {};
+
+% Retorna todos os arquivos que contem iREA_MoS.txt no nome do arquivo
+arquivos = dir('*iREA_MoS.txt');
+tamArquivos = length(arquivos);
 
 for i = 1 : tamArquivos
-    arquivo = arquivos(i).name;                 % Retorna nome de arquivo atual
+    % Retorna nome do arquivo
+    arquivo = arquivos(i).name;
  
-    tabela = retornaMatriz('', arquivo);        % Retorna matriz com elementos do arquivo
+    % Retorna conteudo do arquivo em forma de tabela
+    tabela = lerArquivo('', arquivo);
     
-    linha_cabecalho = tabela(1,:);              % Salva os valores de cabecalho
-        
-    tabela(1,:) = [];                           % Remove a linha de indices
+    % Removecabecalhoy           
+    tabela(1,:) = [];
     
-    kp = str2double(tabela(:,4));               % Retorna a coluna com os valores de grau ponderado
-    
-    Mkp = mean(kp);                             % Retorna a media dos valores do grau ponderado
-        
-    tabela_Mkp(end+1,:) = {arquivo, Mkp};       % Para cada arquivo, salva os valores da media do grau ponderado
-    
-    soma_Mkp = soma_Mkp + Mkp;                  % Soma todas as medias do grau ponderado
-    
+    % Retorna a coluna com os valores de grau ponderado e calcula a média e
+    % salva na tabela
+    kp = str2double(tabela(:,4));               
+    Mkp = mean(kp);
+    tabela_Mkp(end+1,:) = {arquivo, Mkp};    
+     
 end
 
-caminho = pwd;                      % Pega caminho diretorio atual
-diretorio = strsplit(caminho, '\'); % Divide o caminho em arrays com os nomes dos diretorios
-tipo = diretorio{end};              % Pega o nome do diretorio atual
-epoca = diretorio{end-1};           % Pega o nome do diretorio pai
-nomeArquivo1 = strcat(tipo,'-','Tabela_Media_Ponderada.txt'); % Gera nome do arquivo
-nomeArquivo2 = strcat(tipo,'-','Media_Ponderada.txt'); % Gera nome do arquivo
+cabecalho = {'Arquivo','Mkp'};
 
 tabela_Mkp = cell2table(tabela_Mkp);
-tabela_Mkp.Properties.VariableNames = {'Arquivo','Mkp'};
+escreveArquivo(tabela_Mkp,cabecalho,'Tabela Media Ponderada', '.txt');
 
-writetable(tabela_Mkp,nomeArquivo1,'Delimiter','\t') 
-
-Mkp_All = soma_Mkp / tamArquivos;               % Retorna media das somas dos graus ponderados de todos os arquivos
-
-%fido = fopen(nomeArquivo2, 'wt');
-%fprintf(fido,'%s\t%g\n','Media Ponderada',Mkp_All); 
-%fclose(fido);

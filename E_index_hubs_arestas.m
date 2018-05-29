@@ -4,9 +4,10 @@
 %  Email: mpnetto88@gmail.com
 % 
 
-
 %% Calculo de E-index dos hubs das arestas
-
+% Calculo dos E-index da rede para verificar se a rede é heterofilica(mais
+% conexões entre hemisferios) ou homofílica (mais conexões em um mesmo
+% hemisfério)
 
 
 %% Modo de Usar
@@ -14,17 +15,22 @@
 % arquivos que este programa utiliza tem a extensão "REA_G_MoS*.txt"
 
 %% Scripts e documentos necessários
-% 
-% * retornaMatriz.m
-% * Location32.txt
+% * lerArquivo.m
+% * escreveArquivo
 
 % Definição do nome dos eletrodos
 nos_ids={'Fp1';'Fp2';'F7';'F8';'F3';'F4';'T3'; 'T4';'C3'; ...
     'C4';'T5'; 'T6'; 'P3';'P4';'O1';'O2';'Fz';'Pz';'Cz'};
 
-nos_esq = {'Fp1';'F7';'F3';'T3'; 'C3';'T5'; 'P3';'O1'};%;'Fz';'Pz';'Cz'};
 
-nos_dir={'Fp2';'F8';'F4'; 'T4';'C4'; 'T6';'P4';'O2'};%;'Fz';'Pz';'Cz'};
+% Nós que fazem parte das conexões do hemisfério esquerdo
+nos_esq = {'Fp1';'F7';'F3';'T3'; 'C3';'T5'; 'P3';'O1';'Fz';'Pz';'Cz'};
+
+% Nós que fazem parte das conexões do hemisfério direito
+nos_dir={'Fp2';'F8';'F4'; 'T4';'C4'; 'T6';'P4';'O2';'Fz';'Pz';'Cz'};
+
+% Nós que fazem parte das conexões do centro
+nos_centro={'Fz';'Pz';'Cz'};
 
 % Retorna todos os arquivos que contem REA_G_MoS*.txt no nome do arquivo
 arquivos = dir('*REA_G_MoS*.txt');
@@ -53,24 +59,29 @@ for i = 1 : tamArquivos
     % Remove os outliers
     tabela(~outlier, :)=[];
     
-    A = tabela(:,1);
-    B = tabela(:,2);
-    C = tabela(:,2);
-    grafo = graph(A,B,C, nos_ids);
+    % Transforma a tabela em um grafo
+    nos = tabela(:,1);
+    nos_adjacentes = tabela(:,2);
+    pesos = tabela(:,3);
+    grafo = graph(nos,nos_adjacentes,pess, nos_ids);
     
+    % Divide o grafo em subgrafos de esquerda, direita e centro
     rede_esq = subgraph(grafo, nos_esq);
     rede_dir = subgraph(grafo, nos_dir);
+    rede_centro = subgraph(grafo, nos_dir);
     
+    % Calcula quantidade de conexoes realizadas em cada subrede
     conexoes_esq = height(rede_esq.Edges);
     conexoes_dir = height(rede_dir.Edges);
+    conexoes_centro = height(rede_centro.Edges);
     total_conexoes = height(grafo.Edges);
     
-    IL = conexoes_esq + conexoes_dir
-    EL = total_conexoes - IL
+    % Numero de conexoes é iguala soma das conexoes de ambos os lados do
+    % hemisfério subtraindo a subrede central, que seria o cnjunto
+    % interceção
+    IL = conexoes_esq + conexoes_dir - conexoes_centro;
+    EL = total_conexoes - IL;
     
-    eIndex = (EL - IL)/(EL + IL)
-    
-    
-    
-    
+    % Calcula o valor do E-Index
+    eIndex = (EL - IL)/(EL + IL);    
 end

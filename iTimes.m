@@ -1,58 +1,62 @@
-% -- Calculo de Médias e Retiradas de Arestas 0 --
-%Autor: Marcos Netto
-%email: mpnetto88@gmail.com
+%% Médias e Desvios com Retirada de Arestas 0
+% 
+%  Autor: Marcos Netto
+%  Email: mpnetto88@gmail.com
+% 
 
-tabela_medias = {};                             % Cria Tabela que vai conteras informaçõs que serão
-tabela_arestas_0 = {};                             % Cria Tabela que vai conteras informaçõs que serão
+%% Calculo das médias e desvios com retirada de Arestas 0
+% É retirado todas as arestas que tem o peso 0 e calculado a média e o
+% desvio das arestas e dos coeficientes de variação. 
 
-arquivos = dir('*iTime_MoS.txt');               % Pega todos os arquivos iTime
-tamArquivos = length(arquivos);                 % Tamanho do array de arquivos
+
+%% Modo de Usar
+% Rodar o programa na pasta onde foram gerados os arquivos pelo TNETEEG. Os
+% arquivos que este programa utiliza tem a extensão "iTime_MoS*.txt"
+
+%% Scripts e documentos necessários
+% * lerArquivo.m
+% * escreveArquivo.m
+
+% Cria tabela das medias
+tabela_medias = {};
+
+% Retorna todos os arquivos que contem iTime_MoS*.txt no nome do arquivo
+arquivos = dir('*iTime_MoS*.txt');
+tamArquivos = length(arquivos);
 
 for i = 1 : tamArquivos
-    arquivo = arquivos(i).name;                 % Retorna nome de arquivo atual
+    % Retorna nome de arquivo atual
+    arquivo = arquivos(i).name;
  
-    tabela = retornaMatriz('', arquivo);          % Retorna matriz com elementos do arquivo em tres colunas
-
-    linha_cabecalho = tabela(1,:);              % Salva os valores de cabecalho
-        
-    tabela(1,:) = [];                           % Remove a linha de indices
-
-    valores_tabela = str2double(tabela);        % Transforma os valores da matriz para double
+    % Retorna conteudo do arquivo
+    tabela = lerArquivo('', arquivo);
     
-    valores_tabela_total = valores_tabela;
+    % Salva os valores de cabecalho e remove
+    linha_cabecalho = tabela(1,:);
+    tabela(1,:) = [];
     
-    valores_tabela(valores_tabela(:, 2)== 0, :)=[];     %Retorna apenas as linhas cuja o valor da aresta (segunda coluna) nao seja 0.
+    % Transforma os valores da matriz para double
+    valores_tabela = str2double(tabela);
     
-    arestas_0 = length(valores_tabela_total) - length(valores_tabela);
+    % Apaga as linhas cuja valor da aresta seja 0
+    valores_tabela(valores_tabela(:, 2)== 0, :)=[];
     
-    arestas = valores_tabela(:,2);              % Pega a coluna das arestas
-    aglomeracao = valores_tabela(:,3);          % Pega a coluna dos coeficientes de aglomeraçào
+    % salva as colunas das arestas e dos coeficientes de aglomeração
+    arestas = valores_tabela(:,2);
+    aglomeracao = valores_tabela(:,3);
     
-    Z = zscore(arestas,1);
-
-    mne = mean(arestas);                         % Calcula Media das arestas
-    mcc = mean(aglomeracao);                     % Calcula media dos ccs
-
-    stne = std(arestas);                         % Calcula desvio padrão das arestas   
-    stcc = std(aglomeracao);                     % Calcula desvio padrãodos cc's
-
-    tabela_medias(end+1,:) = {arquivo,mne,mcc,stne,stcc};   % Para cada arquivo, salva os valores acima para tabela
-    tabela_arestas_0(end+1,:) = {arquivo,arestas_0};   % Para cada arquivo, salva os valores acima para tabela
+    % Calcula as medias e os desvios padrões das arestas e dos coeficientes
+    mne = mean(arestas);
+    mcc = mean(aglomeracao);
+    stne = std(arestas); 
+    stcc = std(aglomeracao);
+    
+    % Salva os valores na tabela
+    tabela_medias(end+1,:) = {arquivo,mne,mcc,stne,stcc};
 end
 
-caminho = pwd;                      % Pega caminho diretorio atual
-diretorio = strsplit(caminho, '\'); % Divide o caminho em arrays com os nomes dos diretorios
-
-tipo = diretorio{end};
-nomeArquivo = strcat(tipo,'-','Tabela_Medias_Desvios.txt'); % Gera nome do arquivo
-nomeArquivo2 = strcat(tipo,'-','Tabela_Arestas_0.txt'); % Gera nome do arquivo
-
 tabela_medias = cell2table(tabela_medias);
-tabela_medias.Properties.VariableNames = {'Arquivo','MNE','MCC','STNE','STCC'};
 
-writetable(tabela_medias,nomeArquivo,'Delimiter','\t');
+cabecalho = {'Arquivo','MNE','MCC','STNE','STCC'};
 
-tabela_arestas_0 = cell2table(tabela_arestas_0);
-tabela_arestas_0.Properties.VariableNames = {'Arquivo','Arestas_0'};
-
-writetable(tabela_arestas_0,nomeArquivo2,'Delimiter','\t');
+escreveArquivo(tabela_medias,cabecalho,'Medias & Desvios - Arestas & Aglomeracao ', '.txt');

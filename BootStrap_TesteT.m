@@ -1,38 +1,48 @@
-%% BootStrap
+%% BootStrap Mann Witney
 % 
 %  Autor: Marcos Netto
 %  Email: mpnetto88@gmail.com
+% 
 
 %% Calculo de BootStrap
 % O bootstrap é utilizado para comparar uma amostragem pequena
 % com uma amostragem grande. Neste BootStrap, é estipulado tamanho fixo de
 % repeticoes para gerar as amostras aleatorias que serão comparadas.
 
+%% Teste T
+% É um teste paramétrico para testar a hipotese nula entre duas amostras
+% independentes. A distribuição das duas amostras tem que ser normais
+
 %% Modo de Usar
-% Rodar o programa na pasta onde foram gerados os arquivos pelo TNETEEG. Os
-% arquivos que este programa utiliza tem a extensão "REA_G_MoS*.txt"
+% O programa pode ser rodado em quaisquer dois arquivos de texto que tenham duas
+% colunas, uma para os indices e outras para os valores
 
 %% Scripts e documentos necessários
-% 
-% * retornaMatriz.m
-% * plotWeiREA.m
-% * Location32.txt
+% * lerArquivo.m
 
+controle = lerArquivo( 'Selecione um documento Controle');     
+demencia = lerArquivo( 'Selecione um documento Demencia');
 
-controle = retornaMatriz( 'Selecione um documento Controle');     
-demencia = retornaMatriz( 'Selecione um documento Demencia');
-
+%Removes a primeira coluna de indices
 controle(1,:) = [];                          
 demencia(1,:) = [];
-                     
-%% 
-tabela_indices = [];                    % Cria tabela de incices vazia
-tamanho_controle = length(controle);    % Tamanho da tabela da primeira amostra
-tamanho_demencia = length(demencia);    % Tamanho da tabela da segunda amostra
-total_amostras = 0;                         % Contador de total de amostras
-amostras_significantemente_diferentes = 0;  % Contador de amostras significantemente diferentes
-tabela_medias = [];                     % Cria uma tabela para poder salvar os valores das medias e do p valor;    
-repeticoes = 1000;                      % Estipul a quantidade de repeticoes
+
+%
+tabela_indices = [];
+
+% Retorna tamanho da tabeladas amostras
+tamanho_controle = length(controle);
+tamanho_demencia = length(demencia);
+
+% Zerando contadores
+total_amostras = 0;
+amostras_significantemente_diferentes = 0;
+
+% Cria uma tabela para poder salvar os valores das medias e do p valor;
+tabela_medias = [];
+
+% Estipula a quantidade de repeticoes
+repeticoes = 1000;                      
 
 %% 
 % Em cada iteração do laço, são realizado os seguintes passos
@@ -65,7 +75,7 @@ while (total_amostras < repeticoes)
 
         total_amostras = total_amostras+1;
         
-        tabela_medias = vertcat(horzcat(mean(valores_controle),mean(valores_demencia), p, h, a,b),tabela_medias);
+        tabela_medias = vertcat(horzcat(mean(valores_controle),mean(valores_demencia), p),tabela_medias);
 
         if(p<0.05)
             amostras_significantemente_diferentes = amostras_significantemente_diferentes+1;
@@ -73,11 +83,12 @@ while (total_amostras < repeticoes)
     end
 end
 
+%%
+% Salva os resultados em um arquivo de texto
+
 resultado = amostras_significantemente_diferentes/total_amostras;
 
-nomeArquivo = strcat('BootStrap - ', tipo, '.txt');
+cabecalho = {'ASD', 'TA', 'Result'};
+tabela = table(amostras_significantemente_diferentes, total_amostras, resultado);
 
-fido = fopen(nomeArquivo, 'wt');
-fprintf(fido,'%s\t%s\t%s\t\n','ASD','TA','Result');
-fprintf(fido,'%g\t%g\t%g\n',amostras_significantemente_diferentes, total_amostras, resultado);  
-fclose(fido);
+escreveArquivo(tabela,cabecalho,'BootStrap - Teste T', '.txt');

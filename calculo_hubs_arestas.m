@@ -4,7 +4,6 @@
 %  Email: mpnetto88@gmail.com
 % 
 
-
 %% Calculo de Hub das Aretas
 % O calculo de hub das arestas é utilizado para calcular as arestas hubs. É
 % criado uma matriz de adjacencia a partir de analise de conexoes dos
@@ -18,7 +17,7 @@
 
 %% Scripts e documentos necessários
 % 
-% * retornaMatriz.m
+% * lerArquivo.m
 % * plotWeiREA.m
 % * getEletrodeLocations.m
 % * Location32.txt
@@ -38,15 +37,14 @@ coord = getEletrodeLocations(nos_ids,'Location32.txt');
 arquivos = dir('*REA_G_MoS*.txt');
 tamArquivos = length(arquivos);
 
-
 for i = 1 : tamArquivos
 
-    % Retorna nome do arquivo e nome
+    % Retorna nome do arquivo e caminho
     arquivo = arquivos(i).name;
     [cam,nome,ext] = fileparts(arquivos(i).name);
  
     % Retorna conteudo do arquivo em forma de tabela
-    tabela = retornaMatriz('', arquivo);
+    tabela = lerArquivo('', arquivo);
  
     % Remove cabeçalho e 4ª coluna
     tabela(1,:) = [];

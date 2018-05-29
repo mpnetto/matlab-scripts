@@ -15,9 +15,11 @@
 %% Scripts e documentos necessários
 % 
 % * lerArquivo.m
-% * escreverArquivo
+% * plotWeiREA.m
+% * getEletrodeLocations.m
+% * Location32.txt
 
-tabela = lerArquivo( 'Selecione um arquivo');
+tabela = retornaMatriz('Selecione o Arquivo');
         
 tabela(1,:) = [];
 
@@ -38,7 +40,7 @@ stcc = valores_tabela(:,4);
 
 % Calcula os coeficientes de variacao das arestas e da aglomaraca
 cva = rdivide(stne,mne)*100;        
-cvag = rdivide(stcc,mcc)*100;
+cvag = rdivide(stcc,mcc)*100
 
 % Salva os valores calculados em suas respectivas tabelas
 tabela_cva = horzcat(coluna_indices,num2cell(cva));
@@ -49,10 +51,10 @@ nomeArquivo2 = strcat(tipo,' - ','Coeficiente_Variacao_Aglomeracao.txt'); % Gera
 
 tabela_cva = cell2table(tabela_cva);
 cabecalho_cva = {'INDIV','CVA'};
-escreveArquivo(tabela_cva,cabecalho_cva,'Coeficiente Variacao Aresta', '.txt');  
+escreveArquivo(tabela_cva,cabecalho,'Coeficiente Variacao Aresta', '.txt');  
 
 tabela_cvag = cell2table(tabela_cvag);
 cabecalho_cvag = {'INDIV','CVAg'};
-escreveArquivo(tabela_cvag,cabecalho_cvag,'Coeficiente Variacao Aglomeracao', '.txt');  
+escreveArquivo(tabela,cabecalho,'Coeficiente Variacao Aglomeracao, '.txt');  
 
 
